@@ -33,15 +33,27 @@ let chunckSize = 35;
 
  }
 
-   function loadPokemonTemplate(responsAsJson, i){
-   let name = responsAsJson.name;
-   let img = responsAsJson.sprites.other['dream_world'].front_default;
-   let bg = responsAsJson.types[0].type['name'];
-    if(responsAsJson.types.length >= 2){
-        bg = responsAsJson.types[1].type['name']
+
+    function infosAboutPkemon(responsAsJson){
+        
+        let name = responsAsJson.name;
+        let id = responsAsJson.id;
+        let img = responsAsJson.sprites.other['dream_world'].front_default;
+        let bg = responsAsJson.types[0].type['name'];
+        if(responsAsJson.types.length >= 2){
+            bg = responsAsJson.types[1].type['name']
+        }
+
+        return {name, id, img, bg}
     }
+
+
+   function loadPokemonTemplate(responsAsJson, i){
+    
+    let {name, id, img, bg} = infosAboutPkemon(responsAsJson);
+
     return`
-    <div id="${responsAsJson.id}" class="pokemon-box ${bg}">
+    <div id="${id}" class="pokemon-box ${bg}">
     <img class="bg-img" id="pokemon-img${i}" src="/logo/bg1.png">
             <div class="infos">
                 <h1 id="pokemon-name" class="pokemon-name">${name}</h1>
@@ -55,9 +67,6 @@ let chunckSize = 35;
             </div>
         </div>
         `
-
-
-
  }
 
 
@@ -67,9 +76,7 @@ let chunckSize = 35;
     for (let i = 0; i <  responsAsJson['types'].length; i++) {
         types.push(`<li>${responsAsJson.types[i].type['name']}</li>`)
     }
-    return  types.reverse((a,b)=>{
-        return b, a
-    }).join('');
+    return  types.join('');
 
  }
 
