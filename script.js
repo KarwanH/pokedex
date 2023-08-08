@@ -4,7 +4,7 @@ async function init(){
     await loadPokemon();
  }
 
-let chunckSize = 35;
+let chunckSize = 10;
  
  async function inculde(){
      let inculdeElement = document.querySelectorAll('[template]');
@@ -20,65 +20,108 @@ let chunckSize = 35;
      }
  }
 
+     let  myArrayOfPok =  []; 
 
- async function loadPokemon(){
-        let main = document.getElementById('main');
-        main.innerHTML = '';
+    async function loadPokemon(){
         for(let i = 1; i < chunckSize+1; i++){
             let url = `https://pokeapi.co/api/v2/pokemon/${i}`
             let res = await fetch(url)
             let responsAsJson = await res.json();
-            main.innerHTML += loadPokemonTemplate(responsAsJson, i);
+            myArrayOfPok.push(responsAsJson);
         }
-
+        render();
  }
 
 
-    function infosAboutPkemon(responsAsJson){
+    function render(){
+        let main = document.getElementById('main');
+        main.innerHTML = '';
+        for(let i = 0; i < myArrayOfPok.length; i++){
+            let json = myArrayOfPok[i]
+            main.innerHTML += loadPokemonTemplate(json, i);
+        }
+ }
+
+
+    function infosAboutPkemon(json){
         
-        let name = responsAsJson.name;
-        let id = responsAsJson.id;
-        let img = responsAsJson.sprites.other['dream_world'].front_default;
-        let bg = responsAsJson.types[0].type['name'];
-        if(responsAsJson.types.length >= 2){
-            bg = responsAsJson.types[1].type['name']
+        let name = json.name;
+        let id = json.id;
+        let img = json.sprites.other['dream_world'].front_default;
+        let bg = json.types[0].type['name'];
+        if(json.types.length >= 2){
+            bg = json.types[1].type['name']
         }
 
         return {name, id, img, bg}
     }
 
 
-   function loadPokemonTemplate(responsAsJson, i){
-    
-    let {name, id, img, bg} = infosAboutPkemon(responsAsJson);
+   function loadPokemonTemplate(json, i){
+
+    let {name, id, img, bg} = infosAboutPkemon(json);
 
     return`
-    <div id="${id}" class="pokemon-box ${bg}">
-    <img class="bg-img" id="pokemon-img${i}" src="/logo/bg1.png">
+    <div id="${id}" data-index="${id}" class="pokemon-box ${bg}"onclick="showDetails(${i})">
+        <img class="bg-img" src="/logo/bg1.png">
             <div class="infos">
                 <h1 id="pokemon-name" class="pokemon-name">${name}</h1>
                 <ul class="characteristic" id="characteristic${i}">
-                ${returnPokemontypes(responsAsJson, i)}
+                ${returnPokemontypes(json, i)}
                 </ul>
             </div>
 
             <div class="img-box">
                 <img class="pokemon-img" id="pokemon-img${i}" src="${img}" alt="pokemon-img">
             </div>
+
+            <span class="id-number">#${id}</span>
         </div>
         `
  }
 
 
-  function returnPokemontypes(responsAsJson){
+  function returnPokemontypes(json){
     let types =  [];
 
-    for (let i = 0; i <  responsAsJson['types'].length; i++) {
-        types.push(`<li>${responsAsJson.types[i].type['name']}</li>`)
+    for (let i = 0; i <  json['types'].length; i++) {
+        types.push(`<li>${json.types[i].type['name']}</li>`)
     }
     return  types.join('');
 
  }
+
+ function searchPokemon() {
+    let searchInput = document.getElementById('search-input').value.toLowerCase();
+    myArrayOfPok.forEach((item, index) => {
+        const pokemon = document.getElementById((index+1).toString());
+        const pokemonName = item.name.toLowerCase();
+        const pokemonId = item.id.toString();
+        if (pokemonName.includes(searchInput) || pokemonId === searchInput) {
+            pokemon.style.display = 'flex'; 
+        } else{
+            pokemon.style.display = 'none'; 
+        }
+    });
+}
+
+
+function showDetails(i, json){
+    document.getElementById('window').style.display = 'flex'
+}
+
+// function closeWindow(){
+//     document.getElementById('window').style.display = 'none';
+// }
+
+// function dontCloseWindow(event){
+//     event.stopPropagation();
+// }
+
+
+
+
+
 
  
  
