@@ -1,127 +1,215 @@
-
-async function init(){
-    await inculde();
+let chunckSize = 40; // Number of Pokémon to load at once
+let myArrayOfPok = []; // Array to store Pokémon data
+async function init() {
+    await include();
     await loadPokemon();
- }
+}
 
-let chunckSize = 10;
- 
- async function inculde(){
-     let inculdeElement = document.querySelectorAll('[template]');
-     for (let i = 0; i < inculdeElement.length; i++) {
-         const element = inculdeElement[i];
-         const file = element.getAttribute('template');
-         const respond = await fetch(file);
-         if(respond.ok){
-             element.innerHTML = await respond.text();
-         }else{
-             element.innerHTML = 'Nicht gefunden'
-         }
-     }
- }
-
-     let  myArrayOfPok =  []; 
-
-    async function loadPokemon(){
-        for(let i = 1; i < chunckSize+1; i++){
-            let url = `https://pokeapi.co/api/v2/pokemon/${i}`
-            let res = await fetch(url)
-            let responsAsJson = await res.json();
-            myArrayOfPok.push(responsAsJson);
+// Loads templates from external files and inserts them into HTML elements
+async function include() {
+    let includeElement = document.querySelectorAll('[template]');
+    for (let i = 0; i < includeElement.length; i++) {
+        const element = includeElement[i];
+        const file = element.getAttribute('template');
+        const response = await fetch(file);
+        if (response.ok) {
+            element.innerHTML = await response.text();
+        } else {
+            element.innerHTML = 'Not found';
         }
-        render();
- }
+    }
+}
 
+// Fetches and loads Pokémon data from the PokeAPI
+async function loadPokemon() {
+    for (let i = 1; i <= chunckSize; i++) {
+        let url = `https://pokeapi.co/api/v2/pokemon/${i}`;
+        let response = await fetch(url);
+        let responseAsJson = await response.json();
+        myArrayOfPok.push(responseAsJson);
+    }
+    render(); // Renders the loaded Pokémon
+}
 
-    function render(){
-        let main = document.getElementById('main');
-        main.innerHTML = '';
-        for(let i = 0; i < myArrayOfPok.length; i++){
-            let json = myArrayOfPok[i]
-            main.innerHTML += loadPokemonTemplate(json, i);
-        }
- }
+// Renders the loaded Pokémon data on the page
+async function render() {
+    let main = document.getElementById('main');
+    main.innerHTML = '';
+    for (let i = 0; i < myArrayOfPok.length; i++) {
+        let json = myArrayOfPok[i];
+        main.innerHTML += loadPokemonTemplate(json, i);
+    }
+}
 
-
-    function infosAboutPkemon(json){
-        
-        let name = json.name;
-        let id = json.id;
-        let img = json.sprites.other['dream_world'].front_default;
-        let bg = json.types[0].type['name'];
-        if(json.types.length >= 2){
-            bg = json.types[1].type['name']
-        }
-
-        return {name, id, img, bg}
+// Extracts specific details about a Pokémon from its JSON data
+function infosAboutPkemon(json) {
+    // Extract relevant details from the JSON data
+    let name = json.name;
+    let id = json.id;
+    let img = json.sprites.other['dream_world'].front_default;
+    let bg = json.types[0].type['name'];
+    if (json.types.length >= 2) {
+        bg = json.types[1].type['name'];
     }
 
+    return { name, id, img, bg }; // Returns the extracted details as an object
+}
 
-   function loadPokemonTemplate(json, i){
+// Returns the Pokémon types as a list of HTML list items
+function returnPokemontypes(json) {
+    let types = [];
 
-    let {name, id, img, bg} = infosAboutPkemon(json);
-
-    return`
-    <div id="${id}" data-index="${id}" class="pokemon-box ${bg}"onclick="showDetails(${i})">
-        <img class="bg-img" src="/logo/bg1.png">
-            <div class="infos">
-                <h1 id="pokemon-name" class="pokemon-name">${name}</h1>
-                <ul class="characteristic" id="characteristic${i}">
-                ${returnPokemontypes(json, i)}
-                </ul>
-            </div>
-
-            <div class="img-box">
-                <img class="pokemon-img" id="pokemon-img${i}" src="${img}" alt="pokemon-img">
-            </div>
-
-            <span class="id-number">#${id}</span>
-        </div>
-        `
- }
-
-
-  function returnPokemontypes(json){
-    let types =  [];
-
-    for (let i = 0; i <  json['types'].length; i++) {
-        types.push(`<li>${json.types[i].type['name']}</li>`)
+    for (let i = 0; i < json['types'].length; i++) {
+        types.push(`<li>${json.types[i].type['name']}</li>`);
     }
-    return  types.join('');
+    return types.join('');
+}
 
- }
-
- function searchPokemon() {
+// Filters and displays Pokémon based on the search input
+function searchPokemon() {
     let searchInput = document.getElementById('search-input').value.toLowerCase();
     myArrayOfPok.forEach((item, index) => {
-        const pokemon = document.getElementById((index+1).toString());
+        const pokemon = document.getElementById((index + 1).toString());
         const pokemonName = item.name.toLowerCase();
         const pokemonId = item.id.toString();
         if (pokemonName.includes(searchInput) || pokemonId === searchInput) {
-            pokemon.style.display = 'flex'; 
-        } else{
-            pokemon.style.display = 'none'; 
+            pokemon.style.display = 'flex';
+        } else {
+            pokemon.style.display = 'none';
         }
     });
 }
 
+// Displays detailed information about a Pokémon in a pop-up window
+function showDetails(i) {
+    let window = document.getElementById('window');
+    window.innerHTML = '';
 
-function showDetails(i, json){
-    document.getElementById('window').style.display = 'flex'
+    document.getElementById('window').style.display = 'flex';
+    window.innerHTML += windowTemplates(i);
 }
 
-// function closeWindow(){
-//     document.getElementById('window').style.display = 'none';
-// }
+// Closes the pop-up window
+function closeWindow() {
+    document.getElementById('window').style.display = 'none';
+}
 
-// function dontCloseWindow(event){
-//     event.stopPropagation();
-// }
+// Prevents the pop-up window from closing when clicking inside it
+function dontCloseWindow(event) {
+    event.stopPropagation();
+}
+
+// Extracts abilities from a Pokémon's JSON data
+function abilities(json){
+    let abilities = [];
+    for (let i = 0; i < json['abilities'].length; i++) {
+        let abilitie = json.abilities[i].ability['name']
+        abilities.push(`<td>${abilitie}</td>`)
+    }
+    return abilities.join('');
+}
+
+// Extracts details about a Pokémon for display
+async function shwoAbout(i) {
+    const json = myArrayOfPok[i];
+    let name = json.name;
+    let height = (json.height/10).toFixed(2).replace('.', ',');
+    let weight = (json.weight / 10).toFixed(0);
+    let baseExperiences  = json.base_experience;
+    return { name, height, weight, baseExperiences };
+}
+
+// Displays a chart showing the stats of a Pokémon
+async function showStats(i) {
+    const json = await myArrayOfPok[i];
+    let baseStats = [];
+    let names = [];
+    for (let i in json.stats) {
+        let stats = json.stats[i]
+        baseStats.push(stats.base_stat)
+        names.push(stats.stat['name']);
+    }
+    let infoBox = document.getElementById('show-about');
+    infoBox.innerHTML = '';
+  
+    infoBox.innerHTML = `
+    <canvas id="myChart"></canvas>
+    `;
+   await chartJs(baseStats, names); // Calls a chart rendering function (not provided in the code)
+}
 
 
+// Fetches evolution chain data and displays images of the evolution chain for a given Pokémon
+async function showEvolution(i) {
+    let allEvel = [];
+    const json = await myArrayOfPok[i];
+    const name = json.name;
+    let url_1 = `https://pokeapi.co/api/v2/pokemon-species/${name}`;
+    let response_1 = await fetch(url_1);
+    let responseAsJson_1 = await response_1.json();
+    let responseUrl = responseAsJson_1.evolution_chain.url;
+  
+    // Check if evolution chain URL is available
+    if (!responseUrl) {
+      console.error("Evolution chain URL not found");
+      return;
+    }
+  
+    // Fetch evolution chain data
+    let respons = await fetch(responseUrl);
+    let evelutionChainAsJson = await respons.json();
+    let chain = evelutionChainAsJson.chain;
+  
+    // Collect Pokémon names in the evolution chain
+    chain.species ? allEvel.push(chain.species.name) : '';
+    chain.evolves_to[0] && chain.evolves_to[0].species ? allEvel.push(chain.evolves_to[0].species.name) : '';
+    chain.evolves_to[0] && chain.evolves_to[0].evolves_to[0] && chain.evolves_to[0].evolves_to[0].species ? allEvel.push(chain.evolves_to[0].evolves_to[0].species.name) : '';
+    
+    // Fetch and display images
+    let divElement = document.createElement('div');
+    divElement.classList.add("info-img-div");
+    divElement.innerHTML = '';
+  
+    let infoBox = document.getElementById('show-about');
+    infoBox.innerHTML = '';
+  
+    // Loop through the evolution chain and fetch Pokémon IDs and display images
+    for (let pokemonName of allEvel) {
+        const pokemonId = await getPokemonId(pokemonName); // Wait for the ID
+        const imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`;
+        
+        let imgElement = document.createElement("img");
+        imgElement.src = imgUrl;
+        imgElement.alt = pokemonName;
+        divElement.appendChild(imgElement);   
+    };
+  
+    infoBox.appendChild(divElement); // Append the div with images to infoBox
+}
+
+// Fetches the ID of a Pokémon based on its name
+async function getPokemonId(pokemonName) {
+    const url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.id;
+}
 
 
+async function getPokemonMoves(i) {
+    let infoBox = document.getElementById('show-about');
+    infoBox.innerHTML = '';
+    const json = await myArrayOfPok[i];
+    const ulElement = document.createElement("ul");
+    ulElement.classList.add("moves-div");
+    for(let moves in json.moves) {
+        const move = json.moves[moves].move['name'];
+        const liElement = document.createElement("li");
+        liElement.append(move);
+        ulElement.appendChild(liElement);
+    }
 
+    infoBox.appendChild(ulElement);
+}
 
- 
- 
+  
