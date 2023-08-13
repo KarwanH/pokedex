@@ -10,8 +10,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>pokedex</title>
 </head>
-<body onload="init()">
+<body onload="init(), loadFunction()">
     <header template="include/header.html"></header>
+    <div id="loader" class="loader"></div>;
 
     <main id="main">
 

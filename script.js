@@ -1,4 +1,4 @@
-let chunckSize = 40; // Number of Pokémon to load at once
+let chunckSize = 50; // Number of Pokémon to load at once
 let myArrayOfPok = []; // Array to store Pokémon data
 async function init() {
     await include();
@@ -23,6 +23,9 @@ async function include() {
 // Fetches and loads Pokémon data from the PokeAPI
 async function loadPokemon() {
     for (let i = 1; i <= chunckSize; i++) {
+        if (i <= myArrayOfPok.length) {
+            break;
+        }
         let url = `https://pokeapi.co/api/v2/pokemon/${i}`;
         let response = await fetch(url);
         let responseAsJson = await response.json();
@@ -211,5 +214,13 @@ async function getPokemonMoves(i) {
 
     infoBox.appendChild(ulElement);
 }
+
+    //  Learing the ES5 concepts (Arrow)
+    const loadFunction = async () => {
+        setTimeout(()=>{
+        const loader = document.getElementById('loader');
+        loader.style.display = 'none'; // Versteckt die Ladeanimation
+        },await loadPokemon())
+      };
 
   
