@@ -1,4 +1,4 @@
-let chunckSize = 50; // Number of Pokémon to load at once
+let chunckSize = 100; // Number of Pokémon to load at once
 let myArrayOfPok = []; // Array to store Pokémon data
 async function init() {
     await include();
@@ -144,6 +144,9 @@ async function showStats(i) {
 
 // Fetches evolution chain data and displays images of the evolution chain for a given Pokémon
 async function showEvolution(i) {
+    let infoBox = document.getElementById('show-about');
+    infoBox.innerHTML = '';
+
     let allEvel = [];
     const json = await myArrayOfPok[i];
     const name = json.name;
@@ -172,9 +175,6 @@ async function showEvolution(i) {
     let divElement = document.createElement('div');
     divElement.classList.add("info-img-div");
     divElement.innerHTML = '';
-  
-    let infoBox = document.getElementById('show-about');
-    infoBox.innerHTML = '';
   
     // Loop through the evolution chain and fetch Pokémon IDs and display images
     for (let pokemonName of allEvel) {
