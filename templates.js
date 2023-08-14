@@ -23,6 +23,8 @@ function loadPokemonTemplate(json, i) {
 function windowTemplates(i) {
   return `
   <div class="big-size-pokemon" id="big-size-pokemon" onclick="dontCloseWindow(event)">
+  <i class="bi bi-arrow-right-circle-fill" onclick="nextItem(${i})"></i>
+  <i class="bi bi-arrow-left-circle-fill" onclick="previousItem(${i})"></i>
       ${firstDivTemp(i)}
       ${secondDivTemp(i)}
   </div>

@@ -231,6 +231,7 @@
 .big-size-pokemon{
     width: 70%;
     max-width: 400px;
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 70vh;
@@ -238,6 +239,23 @@
     border-radius: 20px;
     cursor: pointer;
     box-shadow: 0px 16px 36px 11px rgba(233, 230, 230, 0.877);
+}
+
+.bi-arrow-right-circle-fill{
+  position: absolute;
+  font-size: 24px;
+  top: 50%;
+  right: -20px;
+  z-index: 5;
+}
+
+
+.bi-arrow-left-circle-fill{
+  position: absolute;
+  font-size: 24px;
+  top: 50%;
+  left: -20px;
+  z-index: 5;
 }
 
 .first-div{
@@ -454,11 +472,10 @@
 
   /* Responsive design */
 
-  @media only screen and (max-width: 410px) {
+  @media only screen and (max-width: 500px) {
     .header{
         flex-direction: column;
     }
-
 
     body {
       font-size: smaller !important;
@@ -466,13 +483,28 @@
 
     .window{
       top: 150px;
+      align-items: flex-start;
+    }
+
+    .big-size-pokemon{
+      width: 100%;
+      height: 100%;
+    }
+
+    .bi-arrow-left-circle-fill{
+      left: 0px;
+    }
+
+    .bi-arrow-right-circle-fill{
+      right: 0px;
     }
 
     .main-img{
       vertical-align: bottom;
-      width: 100px ;
-      height: 100px;
-      margin-top: 40px;
+      width: 200px ;
+      height: 170px;
+      font-size: 100px;
+      margin-top: -70px;
     }
   }
 

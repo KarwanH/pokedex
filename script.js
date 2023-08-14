@@ -2,6 +2,7 @@ let chunckSize = 100; // Number of Pokémon to load at once
 let myArrayOfPok = []; // Array to store Pokémon data
 async function init() {
     await include();
+    await loadFunction();
     await loadPokemon();
 }
 
@@ -83,8 +84,12 @@ function searchPokemon() {
     });
 }
 
+
+let currentPokemon;
 // Displays detailed information about a Pokémon in a pop-up window
 function showDetails(i) {
+    currentPokemon = i;
+    console.log(currentPokemon)
     let window = document.getElementById('window');
     window.innerHTML = '';
 
@@ -223,4 +228,24 @@ async function getPokemonMoves(i) {
         },await loadPokemon())
       };
 
+
+      const previousItem = async () =>{
+        currentPokemon--;
+        if(currentPokemon > 0){
+            await showDetails(currentPokemon)
+        } else{
+            currentPokemon = myArrayOfPok.length -1;
+            await showDetails(currentPokemon)
+        }
+      }
+
+      const nextItem = async () =>{
+        currentPokemon++;
+        if(currentPokemon >  myArrayOfPok.length-1){
+            await showDetails(0)
+        } else{
+            await showDetails(currentPokemon)
+        }
+      }
+      
   
