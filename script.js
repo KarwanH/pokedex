@@ -1,4 +1,5 @@
-let chunckSize = 100; // Number of Pokémon to load at once
+let chunckSize = 20; // Number of Pokémon to load at once
+let i =1
 let myArrayOfPok = []; // Array to store Pokémon data
 async function init() {
     await include();
@@ -23,10 +24,7 @@ async function include() {
 
 // Fetches and loads Pokémon data from the PokeAPI
 async function loadPokemon() {
-    for (let i = 1; i <= chunckSize; i++) {
-        if (i <= myArrayOfPok.length) {
-            break;
-        }
+    for ( i ; i <= chunckSize; i++) {
         let url = `https://pokeapi.co/api/v2/pokemon/${i}`;
         let response = await fetch(url);
         let responseAsJson = await response.json();
@@ -35,10 +33,18 @@ async function loadPokemon() {
     render(); // Renders the loaded Pokémon
 }
 
+
+// Load more Pokemons
+
+async  function loadMore(){
+    chunckSize += 20;
+    await loadPokemon();
+}
+
 // Renders the loaded Pokémon data on the page
 async function render() {
     let main = document.getElementById('main');
-    main.innerHTML = '';
+    main.innerHTML = "";
     for (let i = 0; i < myArrayOfPok.length; i++) {
         let json = myArrayOfPok[i];
         main.innerHTML += loadPokemonTemplate(json, i);
