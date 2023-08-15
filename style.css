@@ -239,24 +239,21 @@
 .window{
     z-index: 100;
     position: fixed;
-    top: 120px;
     display: none;
     cursor: pointer;
+    top: 0;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.199);
-
 }
 
 .big-size-pokemon{
     width: 70%;
     max-width: 400px;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 70vh;
+    height: 650px;
     background-color: white;
     border-radius: 30px;
     cursor: pointer;
@@ -283,7 +280,8 @@
 .first-div{
     padding: 12px;
     height: 40%;
-    border-radius: 25px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
   }
 
   .bootstrap-icon{
@@ -345,7 +343,7 @@
     background-color: white;
     z-index: 2;
     padding: 12px;
-    margin-top: -30px;
+    margin-top: -20px;
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
     display: flex;
@@ -440,8 +438,6 @@
 
   canvas{
     display: inline-block !important;
-    width: 100% !important;
-    height: 100% !important;
   }
  
   .info-img-div {
@@ -457,7 +453,7 @@
 
   .moves-div{
     display: flex;
-    height: 300px;
+    height: 100%;
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
@@ -504,14 +500,14 @@
     }
 
     .window{
-      top: 150px;
       align-items: flex-start;
     }
 
     .big-size-pokemon{
       width: 100%;
-      height: 100%;
-      padding-bottom: -30px;
+      height: 95%;
+      position: absolute;
+      top: 10px;
     }
 
     .bi-arrow-left-circle-fill{
@@ -528,10 +524,22 @@
 
     .main-img{
       vertical-align: bottom;
-      width: 120px ;
-      height: 170px;
+      width: 150px ;
+      height: 150px;
       font-size: 100px;
-      margin-top: -20px;
+      margin-top: 0px;
+    }
+  }
+
+  @media screen and (max-width: 300px) {
+    .main-img{
+      width: 120px;
+      margin-top: 50px;
+      height: 100px;
+    }
+
+    .info-img-div img{
+      width: 80px;
     }
   }
 
